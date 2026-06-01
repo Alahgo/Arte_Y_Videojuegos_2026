@@ -35,4 +35,10 @@ public class Narrador : MonoBehaviour
     {
         StartCoroutine("empezarDialogo");
     }
+
+    public void AddIndex()
+    {
+        index++;
+        MandarCorutinaDialogo();
+    }
 }

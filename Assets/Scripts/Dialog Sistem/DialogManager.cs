@@ -36,6 +36,14 @@ public class DialogManager : MonoBehaviour
 
     private bool _isTyping;
 
+    private string rutaCompletaArchivo;
+
+    private bool lockEvent = false;
+
+    private string contenidoActual;
+
+    private string contenidoEsperado = "Chico\nChica\nChique";
+
     public bool _isChossing;
 
     private List<Choice> currentChoices;
@@ -62,6 +70,54 @@ public class DialogManager : MonoBehaviour
 
     private void Start()
     {
+        string nombreCarpeta = "Generos disponibles";
+        string nombreCarpeta2 = "Prohibido";
+        string nombreArchivo = "Generos.txt";
+
+        string rutaCarpeta = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), nombreCarpeta);
+        rutaCompletaArchivo = System.IO.Path.Combine(rutaCarpeta, nombreArchivo);
+        
+        string rutaCarpeta2 = System.IO.Path.Combine(rutaCarpeta, nombreCarpeta2);
+        string rutaCompletaArchivo2 = System.IO.Path.Combine(rutaCarpeta2, nombreArchivo);
+
+        try
+        {
+           
+            if (!Directory.Exists(rutaCarpeta))
+            {
+                Directory.CreateDirectory(rutaCarpeta);
+            }
+
+            if (!File.Exists(rutaCompletaArchivo))
+            {
+                File.WriteAllText(rutaCompletaArchivo, "Chico\nChica");   
+            }
+            else
+            {
+                Debug.Log("El archivo ya existe, no se volvió a crear.");
+            }
+
+            if (!Directory.Exists(rutaCarpeta2))
+            {
+                Directory.CreateDirectory(rutaCarpeta2);
+            }
+
+            if (!File.Exists(rutaCompletaArchivo2))
+            {
+                File.WriteAllText(rutaCompletaArchivo2, "Chico\nChica\nChique");
+            }
+            else
+            {
+                Debug.Log("El archivo ya existe, no se volvió a crear.");
+            }
+
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Error al intentar crear los archivos: {e.Message}");
+        }
+    
+
         _dIsPlaying = false;
         _isTyping = false;
         _isChossing = false;
@@ -79,12 +135,24 @@ public class DialogManager : MonoBehaviour
 
     private void Update()
     {
-        /*
-        if (!_dIsPlaying && !File.Exists(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "ArchivoPruebas.txt")))
+        
+        if (File.Exists(rutaCompletaArchivo))
         {
-            Debug.Log("No existe");
-            return;
-        }*/
+            Debug.Log("Existe");
+
+            if (!lockEvent)
+            {
+                string contenidoActual = File.ReadAllText(rutaCompletaArchivo);
+
+                if (contenidoActual == contenidoEsperado)
+                {
+                    Debug.Log("Se modifico");
+                    lockEvent = !lockEvent;
+                    Narrador.instance.AddIndex();
+
+                }
+            }
+        }
 
         if (Input.GetKeyDown(KeyCode.Return) && !_isTyping && !_isChossing)
         {
