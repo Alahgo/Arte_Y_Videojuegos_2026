@@ -1,10 +1,11 @@
-using Ink.Runtime;
+﻿using Ink.Runtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 
@@ -94,7 +95,7 @@ public class DialogManager : MonoBehaviour
             }
             else
             {
-                Debug.Log("El archivo ya existe, no se volvi� a crear.");
+                Debug.Log("El archivo ya existe, no se volvió a crear.");
             }
 
             if (!Directory.Exists(rutaCarpeta2))
@@ -108,7 +109,7 @@ public class DialogManager : MonoBehaviour
             }
             else
             {
-                Debug.Log("El archivo ya existe, no se volvi� a crear.");
+                Debug.Log("El archivo ya existe, no se volvió a crear.");
             }
 
         }
@@ -181,7 +182,7 @@ public class DialogManager : MonoBehaviour
         _audioClips = typingSounds;
         _story = new Story(_InkJson.text);
         _dIsPlaying = true;
-
+       
         if(_isChossing) _dPanel.SetActive(true);
 
         ContinueStory();
@@ -201,17 +202,39 @@ public class DialogManager : MonoBehaviour
         if (_story.canContinue)
         {
             StopAllCoroutines();
-            StartCoroutine(TypeLine(_story.Continue()));
+            string lineaTexto = _story.Continue();
 
-           
+
             if (_story.currentChoices.Count > 0)
             {
-                DisplayChoices();
+               
+                _dPanel.SetActive(true);
             }
             else
             {
-                UnDisplaceChoices();
+               
+                _dPanel.SetActive(false);
             }
+
+            List<string> etiquetasActuales = _story.currentTags;
+            if (etiquetasActuales.Count > 0)
+            {
+                // Comprobamos si viene la etiqueta de encender el panel
+                if (etiquetasActuales.Contains("mostrarPanel"))
+                {
+                    _dPanel.SetActive(true);
+                }
+
+                // 👇 DETECTAMOS EL CAMBIO DE ESCENA AQUÍ 👇
+                if (etiquetasActuales.Contains("siguientePantalla"))
+                {
+                    Debug.Log("¡Etiqueta detectada! Cambiando de escena...");
+                    SceneManager.LoadScene(2);
+                }
+            }
+
+            // Empezamos a escribir la línea
+            StartCoroutine(TypeLine(lineaTexto));
         }
         else if (!_story.canContinue && Narrador.instance.index < Narrador.instance.numeroD)
         {
@@ -241,7 +264,7 @@ public class DialogManager : MonoBehaviour
         currentChoices = _story.currentChoices;
 
         if (currentChoices.Count > choices.Length)
-            Debug.LogError("M�s opciones de las que soporta la UI. Max soportado " + choices.Length);
+            Debug.LogError("Más opciones de las que soporta la UI. Max soportado " + choices.Length);
 
         int i = 0;
         foreach (Choice choice in currentChoices)
@@ -255,7 +278,8 @@ public class DialogManager : MonoBehaviour
 
     private void UnDisplaceChoices()
     {
-       
+
+        // Desactivamos los botones de la UI
         foreach (GameObject choiceBtn in choices)
         {
             if (choiceBtn != null)
@@ -264,30 +288,41 @@ public class DialogManager : MonoBehaviour
             }
         }
 
-      
+        // Limpiamos los textos de los botones
         foreach (TextMeshProUGUI txt in _choicesText)
         {
             if (txt != null) txt.text = "";
         }
-
-        _dPanel.SetActive(false);
     }
 
     IEnumerator TypeLine(string line)
     {
+        _isTyping = true;
         _dText.text = "";
 
+        // Recorremos y escribimos el texto letra a letra
         foreach (char letter in line.ToCharArray())
         {
             _dText.text += letter;
 
-
-            if (letter != ' ')
+            if (letter != ' ' && _audioClips != null && _audioClips.Length > 0)
             {
                 PlayTypingSound();
             }
 
             yield return new WaitForSeconds(typingSpeed);
+        }
+
+        _isTyping = false;
+
+        // Al terminar de escribir, si había opciones detectadas, las mostramos en pantalla
+        if (_story.currentChoices.Count > 0)
+        {
+            DisplayChoices();
+        }
+        else
+        {
+            UnDisplaceChoices();
         }
     }
 

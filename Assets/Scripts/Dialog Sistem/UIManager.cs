@@ -40,7 +40,7 @@ public class UIManager : MonoBehaviour
 
             if (Input.GetButtonDown("Submit"))
             {
-                if (index != flechas.Length - 1) DialogManager.instance.MakeChoice(index);
+                DialogManager.instance.MakeChoice(index);
             }
         }
     }
