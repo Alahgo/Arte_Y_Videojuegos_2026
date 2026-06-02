@@ -71,54 +71,7 @@ public class DialogManager : MonoBehaviour
 
     private void Start()
     {
-        string nombreCarpeta = "Generos disponibles";
-        string nombreCarpeta2 = "Prohibido";
-        string nombreArchivo = "Generos.txt";
-
-        string rutaCarpeta = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), nombreCarpeta);
-        rutaCompletaArchivo = System.IO.Path.Combine(rutaCarpeta, nombreArchivo);
-        
-        string rutaCarpeta2 = System.IO.Path.Combine(rutaCarpeta, nombreCarpeta2);
-        string rutaCompletaArchivo2 = System.IO.Path.Combine(rutaCarpeta2, nombreArchivo);
-
-        try
-        {
-           
-            if (!Directory.Exists(rutaCarpeta))
-            {
-                Directory.CreateDirectory(rutaCarpeta);
-            }
-
-            if (!File.Exists(rutaCompletaArchivo))
-            {
-                File.WriteAllText(rutaCompletaArchivo, "Chico\nChica");   
-            }
-            else
-            {
-                Debug.Log("El archivo ya existe, no se volvió a crear.");
-            }
-
-            if (!Directory.Exists(rutaCarpeta2))
-            {
-                Directory.CreateDirectory(rutaCarpeta2);
-            }
-
-            if (!File.Exists(rutaCompletaArchivo2))
-            {
-                File.WriteAllText(rutaCompletaArchivo2, "Chico\nChica\nChique");
-            }
-            else
-            {
-                Debug.Log("El archivo ya existe, no se volvió a crear.");
-            }
-
-        }
-        catch (Exception e)
-        {
-            Debug.LogError($"Error al intentar crear los archivos: {e.Message}");
-        }
-    
-
+        rutaCompletaArchivo = PlayerPrefs.GetString("RutaArchivoGeneros");
         _dIsPlaying = false;
         _isTyping = false;
         _isChossing = false;
@@ -225,7 +178,7 @@ public class DialogManager : MonoBehaviour
                     _dPanel.SetActive(true);
                 }
 
-                // 👇 DETECTAMOS EL CAMBIO DE ESCENA AQUÍ 👇
+               
                 if (etiquetasActuales.Contains("siguientePantalla"))
                 {
                     Debug.Log("¡Etiqueta detectada! Cambiando de escena...");

@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -77,6 +79,7 @@ public class ConfigurationManager : MonoBehaviour
 
     public void Continue()
     {
+        CrearEstructuraDeCarpetas();
         SceneManager.LoadScene(1);
     }
 
@@ -131,5 +134,64 @@ public class ConfigurationManager : MonoBehaviour
 
         Screen.fullScreenMode = (FullScreenMode)screenMode;
         Screen.SetResolution(resolution.width, resolution.height,(FullScreenMode)screenMode);
+    }
+
+    private void CrearEstructuraDeCarpetas()
+    {
+        string nombreRoot = "Carpeta_Datos";
+        string nombreCarpeta = "Generos disponibles";
+        string nombreCarpeta2 = "Prohibido";
+        string nombreArchivo = "Generos.txt";
+
+        string rutaCarpetaRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), nombreRoot);
+
+        string rutaCarpeta = Path.Combine(rutaCarpetaRoot, nombreCarpeta);
+        string rutaCompletaArchivo = Path.Combine(rutaCarpeta, nombreArchivo);
+
+        string rutaCarpeta2 = Path.Combine(rutaCarpeta, nombreCarpeta2);
+        string rutaCompletaArchivo2 = Path.Combine(rutaCarpeta2, nombreArchivo);
+
+        try
+        {
+
+            if (!Directory.Exists(rutaCarpetaRoot))
+            {
+                Directory.CreateDirectory(rutaCarpeta);
+            }
+
+            if (!Directory.Exists(rutaCarpeta))
+            {
+                Directory.CreateDirectory(rutaCarpeta);
+            }
+
+            if (!File.Exists(rutaCompletaArchivo))
+            {
+                File.WriteAllText(rutaCompletaArchivo, "Chico\nChica");
+            }
+            else
+            {
+                Debug.Log("El archivo ya existe, no se volvió a crear.");
+            }
+
+            if (!Directory.Exists(rutaCarpeta2))
+            {
+                Directory.CreateDirectory(rutaCarpeta2);
+            }
+
+            if (!File.Exists(rutaCompletaArchivo2))
+            {
+                File.WriteAllText(rutaCompletaArchivo2, "Chico\nChica\nChique");
+            }
+            else
+            {
+                Debug.Log("El archivo ya existe, no se volvió a crear.");
+            }
+            PlayerPrefs.SetString("RutaArchivoGeneros", rutaCompletaArchivo);
+            PlayerPrefs.Save();
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Error al intentar crear los archivos: {e.Message}");
+        }
     }
 }
