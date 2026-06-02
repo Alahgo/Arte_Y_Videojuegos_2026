@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public enum BattleState { START, PLAYERTURN, ENEMYTURN, WON, LOST }
 
@@ -10,11 +13,83 @@ public class BattleManager : MonoBehaviour
 
     public BattleUnit playerUnit;
     public BattleUnit enemyUnit;
+    public TextMeshProUGUI vidaActualPlayer;
+    public TextMeshProUGUI manaActualPlayer;
+    public GameObject ventanaAcciones;
+    public GameObject flechaSelecEnemy;
+    public GameObject[] flechas;
+    public GameObject btnReset;
+
+    private int index = 0;
+    private bool _isActing = false;
+    private bool _ejeEnUso = false;
+
 
     void Start()
     {
+        vidaActualPlayer.text = playerUnit.currentHp.ToString();
+        manaActualPlayer.text = playerUnit.currentMana.ToString();
         state = BattleState.START;
         StartCoroutine(SetupBattle());
+        
+    }
+
+    void Update()
+    {
+        
+        if (_isActing && state == BattleState.PLAYERTURN)
+        {
+            float valorVertical = Input.GetAxisRaw("Vertical");
+
+            if (valorVertical != 0)
+            {
+                if (!_ejeEnUso)
+                {
+                    if (valorVertical > 0) EjecutarAccionArriba();
+                    else if (valorVertical < 0) EjecutarAccionAbajo();
+
+                    _ejeEnUso = true;
+                }
+            }
+            else
+            {
+                _ejeEnUso = false;
+            }
+
+           
+            if (Input.GetButtonDown("Submit"))
+            {
+                _isActing = false;
+                ventanaAcciones.SetActive(false);
+
+                
+                if (index == 0)
+                {
+                    StartCoroutine(PlayerAttack());
+                }
+                else if (index == 1)
+                {
+                    StartCoroutine(PlayerUseSkill());
+                }
+                else
+                {
+                    StartCoroutine(PlayerDefend());
+                }
+             
+
+                index = 0;
+                MostrarFlechas();
+            }
+        }
+       
+        else if (!_isActing && state == BattleState.PLAYERTURN)
+        {
+            if (Input.GetButtonDown("Submit"))
+            {
+                ventanaAcciones.SetActive(true);
+                _isActing = true;
+            }
+        }
     }
 
     IEnumerator SetupBattle()
@@ -26,32 +101,15 @@ public class BattleManager : MonoBehaviour
 
     void PlayerTurn()
     {
+        flechaSelecEnemy.SetActive(true);
         state = BattleState.PLAYERTURN;
         Debug.Log("Es el turno del jugador. Elige una acción.");
-        // Aquí se activaría la UI de botones para el jugador
+        
     }
 
-    public void OnAttackButton()
-    {
-        if (state != BattleState.PLAYERTURN) return;
-        StartCoroutine(PlayerAttack());
-    }
-
-    public void OnDefendButton()
-    {
-        if (state != BattleState.PLAYERTURN) return;
-        StartCoroutine(PlayerDefend());
-    }
-
-    public void OnSkillButton(SkillData skill)
-    {
-        if (state != BattleState.PLAYERTURN) return;
-        StartCoroutine(PlayerUseSkill(skill));
-    }
 
     IEnumerator PlayerAttack()
     {
-        // El jugador ataca al enemigo
         playerUnit.AttackTarget(enemyUnit);
         yield return new WaitForSeconds(1f);
 
@@ -67,17 +125,18 @@ public class BattleManager : MonoBehaviour
         StartCoroutine(EnemyTurn());
     }
 
-    IEnumerator PlayerUseSkill(SkillData skill)
+    IEnumerator PlayerUseSkill()
     {
-        if (playerUnit.currentMana >= skill.manaCost)
+        if (playerUnit.currentMana >= 5)
         {
-            playerUnit.UseMana(skill.manaCost);
-            skill.Execute(playerUnit, enemyUnit);
+            playerUnit.UseMana(5);
+            playerUnit.UseSkill(enemyUnit);
+            manaActualPlayer.text = playerUnit.currentMana.ToString();
         }
         else
         {
-            Debug.Log("¡No hay suficiente maná!");
-            yield break; // Permite al jugador elegir otra cosa
+            Debug.Log("No hay suficiente maná");
+            yield break; 
         }
 
         yield return new WaitForSeconds(1f);
@@ -86,11 +145,19 @@ public class BattleManager : MonoBehaviour
 
     IEnumerator EnemyTurn()
     {
-        Debug.Log("Turno del enemigo...");
+        ventanaAcciones.SetActive(false);
+        flechaSelecEnemy.SetActive(false);
+        Debug.Log("Turno del enemigo");
         yield return new WaitForSeconds(1f);
 
-        // IA enemiga simple: Ataca si el jugador no está defendido, o aleatorio
+        int currentLife = playerUnit.currentHp; 
         enemyUnit.AttackTarget(playerUnit);
+
+        if (currentLife != playerUnit.currentHp)
+        {
+            vidaActualPlayer.text = playerUnit.currentHp.ToString();
+        }
+
         yield return new WaitForSeconds(1f);
 
         CheckBattleStatus();
@@ -110,7 +177,7 @@ public class BattleManager : MonoBehaviour
         }
         else
         {
-            // Resetear estados temporales (como la defensa) antes de cambiar de turno
+            
             if (state == BattleState.PLAYERTURN)
             {
                 state = BattleState.ENEMYTURN;
@@ -118,7 +185,7 @@ public class BattleManager : MonoBehaviour
             }
             else
             {
-                playerUnit.ResetDefense(); // Quitar escudo al empezar su turno
+                playerUnit.ResetDefense();
                 PlayerTurn();
             }
         }
@@ -126,8 +193,45 @@ public class BattleManager : MonoBehaviour
 
     void EndBattle()
     {
-        if (state == BattleState.WON) Debug.Log("¡Ganaste la batalla!");
-        else if (state == BattleState.LOST) Debug.Log("Fuiste derrotado...");
+        if (state == BattleState.WON) Debug.Log("Ganaste la batalla");
+        else if (state == BattleState.LOST) {
+            btnReset.SetActive(true);
+        }
+    }
+
+    void EjecutarAccionArriba()
+    {
+        index--;
+        if (index < 0) index = flechas.Length - 1;
+        MostrarFlechas();
+
+
+    }
+    void EjecutarAccionAbajo()
+    {
+        index++;
+        if (index > flechas.Length - 1) index = 0;
+        MostrarFlechas();
+
+    }
+
+    void MostrarFlechas()
+    {
+        for (int i = 0; i < flechas.Length; i++)
+        {
+            if (i != index) flechas[i].SetActive(false);
+            else flechas[i].SetActive(true);
+        }
+    }
+
+    public void ResetearCombate()
+    {
+        
+        btnReset.SetActive(false);
+
+       
+        int escenaActual = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene(escenaActual);
     }
 }
 

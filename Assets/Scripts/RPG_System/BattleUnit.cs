@@ -26,6 +26,14 @@ public class BattleUnit : MonoBehaviour
         target.TakeDamage(baseAttack);
     }
 
+    public void UseSkill(BattleUnit target)
+    {
+        Debug.Log($"{unitName} ataca a {target.unitName}!");
+        int extraDmg = baseAttack * 2;
+       
+        target.TakeDamage(baseAttack + extraDmg);
+    }
+
     public void TakeDamage(int damage)
     {
         int finalDamage = damage - baseDefense;
@@ -59,9 +67,5 @@ public class BattleUnit : MonoBehaviour
         currentMana -= amount;
     }
 
-    public void Heal(int amount)
-    {
-        currentHp = Mathf.Min(currentHp + amount, maxHp);
-        Debug.Log($"{unitName} se cura {amount} de vida.");
-    }
+   
 }
