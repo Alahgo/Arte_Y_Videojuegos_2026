@@ -70,7 +70,6 @@ public class ImageDetectorScript : MonoBehaviour
                     Debug.LogError($"Error al crear el archivo: {e.Message}");
                 }
 
-                // Corregido: bloqueamos el evento aquí para que no intente ejecutarse repetidamente en el bucle
                 lockEvent = true;
             }
         }

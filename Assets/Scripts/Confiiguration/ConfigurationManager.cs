@@ -11,7 +11,6 @@ public class ConfigurationManager : MonoBehaviour
     private bool _isWindowed;
 
     public AudioMixer mainMixer;
-    public Slider volumeSlider;
 
     public TMP_Dropdown resolutionDropdown;
     Resolution[] allResolutions;
@@ -85,7 +84,7 @@ public class ConfigurationManager : MonoBehaviour
     {
        
         float volumeInDb = Mathf.Log10(sliderValue) * 20;
-
+        Debug.Log("skhdghf");
         mainMixer.SetFloat("Master", volumeInDb);
         
     }
@@ -94,16 +93,16 @@ public class ConfigurationManager : MonoBehaviour
     {
 
         float volumeInDb = Mathf.Log10(sliderValue) * 20;
-
+        Debug.Log("skhdghf");
         mainMixer.SetFloat("Music", volumeInDb);
 
     }
 
-    public void SetSfxlume(float sliderValue)
+    public void SetSfxVolume(float sliderValue)
     {
 
         float volumeInDb = Mathf.Log10(sliderValue) * 20;
-
+        Debug.Log("skhdghf");
         mainMixer.SetFloat("Sfx", volumeInDb);
 
     }
