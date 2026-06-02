@@ -2,12 +2,13 @@ using UnityEngine;
 
 public class AnimationControllerForAudio : MonoBehaviour
 {
-   
+   private bool lockB = false;
     void Update()
     {
-        if (AudioDetectorScript.instance.HaySonidoExterno)
+        if (!lockB && AudioDetectorScript.instance.HaySonidoExterno)
         {
-            transform.GetComponent<Animator>().SetTrigger("Sonido");
+            lockB = true;
+            transform.GetComponent<Animator>().SetTrigger("LevantarPuerta");
         }
     }
 }
