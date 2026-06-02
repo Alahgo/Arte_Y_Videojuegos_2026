@@ -18,7 +18,10 @@ public class PlayerMovement2D : MonoBehaviour
     void FixedUpdate()
     {
 
-        rb.linearVelocity = new Vector2(moveInput.x * speed, moveInput.y * speed);
+        if (!Scene2ManagerScript.instance._moveIsPaused)
+        {
+            rb.linearVelocity = new Vector2(moveInput.x * speed, moveInput.y * speed);
+        }
         
     }
 }

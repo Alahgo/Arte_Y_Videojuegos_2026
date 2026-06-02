@@ -17,6 +17,7 @@ public class Narrador : MonoBehaviour
             Debug.LogError("Hay más de in narrador");
         }
         instance = this;
+        DontDestroyOnLoad(gameObject);
     }
     private void Start()
     {
@@ -36,9 +37,9 @@ public class Narrador : MonoBehaviour
         StartCoroutine("empezarDialogo");
     }
 
-    public void AddIndex()
+    public void SetIndex(int i)
     {
-        index++;
+        index = i;
         MandarCorutinaDialogo();
     }
 }

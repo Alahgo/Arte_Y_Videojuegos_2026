@@ -67,6 +67,7 @@ public class DialogManager : MonoBehaviour
             Debug.LogError("Hay m?s de una instancia de DialogManager");
         }
         instance = this;
+        DontDestroyOnLoad(gameObject);
     }
 
     private void Start()
@@ -102,7 +103,7 @@ public class DialogManager : MonoBehaviour
                 {
                     Debug.Log("Se modifico");
                     lockEvent = !lockEvent;
-                    Narrador.instance.AddIndex();
+                    Narrador.instance.SetIndex(1);
 
                 }
             }
@@ -183,6 +184,12 @@ public class DialogManager : MonoBehaviour
                 {
                     Debug.Log("¡Etiqueta detectada! Cambiando de escena...");
                     SceneManager.LoadScene(2);
+                }
+
+                if (etiquetasActuales.Contains("activarMov"))
+                {
+                    Scene2ManagerScript.instance._moveIsPaused = false;
+                    Scene2ManagerScript.instance._canvas.SetActive(false);
                 }
             }
 
@@ -283,5 +290,14 @@ public class DialogManager : MonoBehaviour
     {
         _audioSource.pitch = UnityEngine.Random.Range(minPitch, maxPitch);
         _audioSource.PlayOneShot(_audioClips[UnityEngine.Random.Range(0, _audioClips.Length - 1)]);
+    }
+
+    public void Setdata(GameObject p, TextMeshProUGUI t, GameObject[] o, AudioSource a)
+    {
+        _dPanel = p;
+        _dText = t;
+        choices = o;
+        _audioSource = a;
+
     }
 }

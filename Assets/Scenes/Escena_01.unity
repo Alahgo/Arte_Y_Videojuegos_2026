@@ -316,6 +316,7 @@ MonoBehaviour:
   inkJSON:
   - {fileID: 4900000, guid: 49a93258f0f2f384f855e90ddda644a1, type: 3}
   - {fileID: 4900000, guid: 494ad72f3dd759549970b4e0073c10ab, type: 3}
+  - {fileID: 4900000, guid: f67be2735348d6a4fb4ec79f6616a32b, type: 3}
   numeroD: 0
   index: 0
   typingSounds:

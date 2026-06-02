@@ -2387,6 +2387,39 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ConfigurationManager
   mainMixer: {fileID: 24100000, guid: 8bf71ef118c69374da7cfa6dc0b7a41a, type: 2}
   resolutionDropdown: {fileID: 1073221485}
+  imagenes:
+  - textura: {fileID: 2800000, guid: 671b9ff2d03b3c944a37968e481ea347, type: 3}
+    nombreArchivo: BloquearCamino.png
+  - textura: {fileID: 2800000, guid: bfbcaa449c670d74694b055a41395ba2, type: 3}
+    nombreArchivo: Sprite-0001.png
+  - textura: {fileID: 2800000, guid: a685d64006032344b9f0df970c8caf06, type: 3}
+    nombreArchivo: Sprite-0002.png
+  - textura: {fileID: 2800000, guid: 16cd4ad2db5d8684e84ccab404af3903, type: 3}
+    nombreArchivo: Sprite-0003.png
+  - textura: {fileID: 2800000, guid: c95d383980ff4df4f9a524c3fedfc661, type: 3}
+    nombreArchivo: Sprite-0004.png
+  - textura: {fileID: 2800000, guid: 266c1fdd229305f40bdee723cc691eb8, type: 3}
+    nombreArchivo: Sprite-0005.png
+  - textura: {fileID: 2800000, guid: 671b9ff2d03b3c944a37968e481ea347, type: 3}
+    nombreArchivo: Sprite-0015.png
+  - textura: {fileID: 2800000, guid: e547a2319a6ef7846987dd101adcc330, type: 3}
+    nombreArchivo: Sprite-0006.png
+  - textura: {fileID: 2800000, guid: da600043ce62f1249bf5f951df0e931a, type: 3}
+    nombreArchivo: Sprite-0007.png
+  - textura: {fileID: 2800000, guid: e253bce08eae7e64388115affce51c6c, type: 3}
+    nombreArchivo: Sprite-0008.png
+  - textura: {fileID: 2800000, guid: ec6874b3f61727e47aaffcc31c498191, type: 3}
+    nombreArchivo: Sprite-0009.png
+  - textura: {fileID: 2800000, guid: 4900a41ca9153e744af79f90db3d3c6c, type: 3}
+    nombreArchivo: Sprite-00010.png
+  - textura: {fileID: 2800000, guid: d62e31a2b2a20c54aac388b00d533baa, type: 3}
+    nombreArchivo: Sprite-00011.png
+  - textura: {fileID: 2800000, guid: 1a7645a400600c94ea050747db1c40e7, type: 3}
+    nombreArchivo: Sprite-00012.png
+  - textura: {fileID: 2800000, guid: 2ec49fe1373afbb46a79d2d1587e0505, type: 3}
+    nombreArchivo: Sprite-00013.png
+  - textura: {fileID: 2800000, guid: 93134d8d21c341f4cbee88c91c73c59b, type: 3}
+    nombreArchivo: Sprite-00014.png
 --- !u!4 &1123792064
 Transform:
   m_ObjectHideFlags: 0

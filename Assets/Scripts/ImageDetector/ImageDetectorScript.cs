@@ -17,8 +17,8 @@ public class ImageDetectorScript : MonoBehaviour
     void Start()
     {
         lockEvent = false;
-        rutaCarpeta = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Sprites_Nivel_2");
-        rutaCompletaArchivo1 = Path.Combine(rutaCarpeta, "Roca_obstaculo.png");
+        rutaCarpeta = PlayerPrefs.GetString("RutaArchivoImg");
+        rutaCompletaArchivo1 = Path.Combine(rutaCarpeta, "BloquearCamino.png");
     }
 
     void Update()
@@ -29,8 +29,7 @@ public class ImageDetectorScript : MonoBehaviour
             {
                 Debug.Log("Borrado");
 
-                piedra.SetActive(false);
-                puente.SetActive(false);
+                piedra.GetComponent<Animator>().SetTrigger("DestruirPiedra");
 
                 string rutaCarpeta2 = Path.Combine(rutaCarpeta, "No_necesitas_esto");
                 rutaCompletaArchivo2 = Path.Combine(rutaCarpeta2, "Puente.png");
@@ -53,7 +52,6 @@ public class ImageDetectorScript : MonoBehaviour
                            
                             File.WriteAllBytes(rutaCompletaArchivo2, bytesImagen);
 
-                            Debug.Log($"<color=cyan>¡PNG creado con éxito en:</color> {rutaCompletaArchivo2}");
                         }
                         else
                         {
@@ -71,6 +69,7 @@ public class ImageDetectorScript : MonoBehaviour
                 }
 
                 lockEvent = true;
+                Scene2ManagerScript.instance._moveIsPaused = true;
             }
         }
     }

@@ -7,6 +7,13 @@ using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+[System.Serializable]
+public class DatosImagen
+{
+    public Texture2D textura;
+    public string nombreArchivo;
+}
+
 public class ConfigurationManager : MonoBehaviour
 {
     private static ConfigurationManager instance;
@@ -15,8 +22,11 @@ public class ConfigurationManager : MonoBehaviour
     public AudioMixer mainMixer;
 
     public TMP_Dropdown resolutionDropdown;
+    [SerializeField] private DatosImagen[] imagenes;
     Resolution[] allResolutions;
-    private List<Resolution> filteredResolutions; 
+    private List<Resolution> filteredResolutions;
+
+   
 
     private void Awake()
     {
@@ -31,7 +41,7 @@ public class ConfigurationManager : MonoBehaviour
     {
         RefreshRate currentRefreshRate = Screen.currentResolution.refreshRateRatio;
 
-        // 1. Detectar resoluciones disponibles
+       
         allResolutions = Screen.resolutions;
         filteredResolutions = new List<Resolution>();
         resolutionDropdown.ClearOptions();
@@ -141,9 +151,12 @@ public class ConfigurationManager : MonoBehaviour
         string nombreRoot = "Carpeta_Datos";
         string nombreCarpeta = "Generos disponibles";
         string nombreCarpeta2 = "Prohibido";
+        string nombreCarpetaImg = "IMG";
         string nombreArchivo = "Generos.txt";
 
         string rutaCarpetaRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), nombreRoot);
+
+        string rutaImg = Path.Combine(rutaCarpetaRoot, nombreCarpetaImg);
 
         string rutaCarpeta = Path.Combine(rutaCarpetaRoot, nombreCarpeta);
         string rutaCompletaArchivo = Path.Combine(rutaCarpeta, nombreArchivo);
@@ -192,6 +205,31 @@ public class ConfigurationManager : MonoBehaviour
         catch (Exception e)
         {
             Debug.LogError($"Error al intentar crear los archivos: {e.Message}");
+        }
+        try
+        {
+            if (!Directory.Exists(rutaImg))
+            {
+                Directory.CreateDirectory(rutaImg);
+            }
+
+            PlayerPrefs.SetString("RutaArchivoImg", rutaImg);
+            PlayerPrefs.Save();
+
+            // REEMPLAZO DEL FOREACH ADAPTADO A LA NUEVA CLASE:
+            foreach (DatosImagen img in imagenes)
+            {
+                if (img.textura == null) continue; // Evita errores si dejas alguna casilla vacía en el Inspector
+
+                byte[] bytesImagen = img.textura.EncodeToPNG();
+                string ruta = Path.Combine(rutaImg, img.nombreArchivo);
+
+                File.WriteAllBytes(ruta, bytesImagen);
+            }
+        }
+        catch (Exception e)
+        {
+
         }
     }
 }
