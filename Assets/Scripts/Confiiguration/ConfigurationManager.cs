@@ -153,6 +153,8 @@ public class ConfigurationManager : MonoBehaviour
         string nombreCarpeta2 = "Prohibido";
         string nombreCarpetaImg = "IMG";
         string nombreArchivo = "Generos.txt";
+        string nombreCarpetaRPG = "StatCombats";
+        string nombreArchivoRPG = "TusEstadisticas.txt";
 
         string rutaCarpetaRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), nombreRoot);
 
@@ -163,6 +165,11 @@ public class ConfigurationManager : MonoBehaviour
 
         string rutaCarpeta2 = Path.Combine(rutaCarpeta, nombreCarpeta2);
         string rutaCompletaArchivo2 = Path.Combine(rutaCarpeta2, nombreArchivo);
+
+        string rutaRPGarchivo = Path.Combine(rutaCarpetaRoot, nombreCarpetaRPG);
+        string rutaRPGtxt = Path.Combine(rutaRPGarchivo, nombreArchivoRPG);
+
+
 
         try
         {
@@ -199,6 +206,23 @@ public class ConfigurationManager : MonoBehaviour
             {
                 Debug.Log("El archivo ya existe, no se volvió a crear.");
             }
+
+            if (!Directory.Exists(rutaRPGarchivo))
+            {
+                Directory.CreateDirectory(rutaRPGarchivo);
+            }
+
+            if (!File.Exists(rutaRPGtxt))
+            {
+                File.WriteAllText(rutaRPGtxt, "Poder: 1\nDefensa: 1");
+                PlayerPrefs.SetString("RutaArchivoRPG", rutaRPGtxt);
+                PlayerPrefs.Save();
+            }
+            else
+            {
+                Debug.Log("El archivo ya existe, no se volvió a crear.");
+            }
+
             PlayerPrefs.SetString("RutaArchivoGeneros", rutaCompletaArchivo);
             PlayerPrefs.Save();
         }
@@ -216,10 +240,10 @@ public class ConfigurationManager : MonoBehaviour
             PlayerPrefs.SetString("RutaArchivoImg", rutaImg);
             PlayerPrefs.Save();
 
-            // REEMPLAZO DEL FOREACH ADAPTADO A LA NUEVA CLASE:
+            
             foreach (DatosImagen img in imagenes)
             {
-                if (img.textura == null) continue; // Evita errores si dejas alguna casilla vacía en el Inspector
+                if (img.textura == null) continue;
 
                 byte[] bytesImagen = img.textura.EncodeToPNG();
                 string ruta = Path.Combine(rutaImg, img.nombreArchivo);

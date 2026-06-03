@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -19,14 +20,20 @@ public class BattleManager : MonoBehaviour
     public GameObject flechaSelecEnemy;
     public GameObject[] flechas;
     public GameObject btnReset;
+    public Animator _playerAnimator;
+    public Animator _enemyAnimator;
+    public LectorDeTXT lectorTxt;
 
     private int index = 0;
     private bool _isActing = false;
     private bool _ejeEnUso = false;
+    private string textoEsperado = "Poder: 1\nDefensa: 1";
+
 
 
     void Start()
     {
+        
         vidaActualPlayer.text = playerUnit.currentHp.ToString();
         manaActualPlayer.text = playerUnit.currentMana.ToString();
         state = BattleState.START;
@@ -36,6 +43,11 @@ public class BattleManager : MonoBehaviour
 
     void Update()
     {
+        string contenidoActual = File.ReadAllText(PlayerPrefs.GetString("RutaArchivoRPG"));
+        if (textoEsperado != contenidoActual)
+        {
+            lectorTxt.CargarDatosDesdeTxt();
+        }
         
         if (_isActing && state == BattleState.PLAYERTURN)
         {
@@ -110,8 +122,10 @@ public class BattleManager : MonoBehaviour
 
     IEnumerator PlayerAttack()
     {
+        _playerAnimator.SetTrigger("Atack1");
         playerUnit.AttackTarget(enemyUnit);
-        yield return new WaitForSeconds(1f);
+        _enemyAnimator.SetTrigger("getDamage");
+        yield return new WaitForSeconds(2f);
 
         CheckBattleStatus();
     }
@@ -119,7 +133,7 @@ public class BattleManager : MonoBehaviour
     IEnumerator PlayerDefend()
     {
         playerUnit.Defend();
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(2f);
 
         state = BattleState.ENEMYTURN;
         StartCoroutine(EnemyTurn());
@@ -130,7 +144,9 @@ public class BattleManager : MonoBehaviour
         if (playerUnit.currentMana >= 5)
         {
             playerUnit.UseMana(5);
+            _playerAnimator.SetTrigger("Atack2");
             playerUnit.UseSkill(enemyUnit);
+            _enemyAnimator.SetTrigger("getDamage");
             manaActualPlayer.text = playerUnit.currentMana.ToString();
         }
         else
@@ -139,7 +155,7 @@ public class BattleManager : MonoBehaviour
             yield break; 
         }
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(2f);
         CheckBattleStatus();
     }
 
@@ -148,17 +164,22 @@ public class BattleManager : MonoBehaviour
         ventanaAcciones.SetActive(false);
         flechaSelecEnemy.SetActive(false);
         Debug.Log("Turno del enemigo");
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(2f);
+       
 
-        int currentLife = playerUnit.currentHp; 
+        int currentLife = playerUnit.currentHp;
+        _enemyAnimator.SetTrigger("attack");
         enemyUnit.AttackTarget(playerUnit);
+        
+
 
         if (currentLife != playerUnit.currentHp)
         {
+            _playerAnimator.SetTrigger("getDamage");
             vidaActualPlayer.text = playerUnit.currentHp.ToString();
         }
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(2f);
 
         CheckBattleStatus();
     }
@@ -167,11 +188,13 @@ public class BattleManager : MonoBehaviour
     {
         if (enemyUnit.isDead)
         {
+            _enemyAnimator.SetTrigger("die");
             state = BattleState.WON;
             EndBattle();
         }
         else if (playerUnit.isDead)
         {
+            _playerAnimator.SetTrigger("die");
             state = BattleState.LOST;
             EndBattle();
         }
