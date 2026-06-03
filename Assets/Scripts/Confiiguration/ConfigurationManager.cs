@@ -253,7 +253,7 @@ public class ConfigurationManager : MonoBehaviour
         }
         catch (Exception e)
         {
-
+            Debug.LogError(e.Message);
         }
     }
 }

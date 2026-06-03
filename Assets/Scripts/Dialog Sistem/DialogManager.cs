@@ -182,7 +182,7 @@ public class DialogManager : MonoBehaviour
                
                 if (etiquetasActuales.Contains("siguientePantalla"))
                 {
-                    Debug.Log("¡Etiqueta detectada! Cambiando de escena...");
+                   
                     SceneManager.LoadScene(2);
                 }
 
