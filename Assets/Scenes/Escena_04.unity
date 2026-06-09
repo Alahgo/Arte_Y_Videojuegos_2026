@@ -2629,7 +2629,7 @@ MonoBehaviour:
   currentHp: 100
   maxMana: 100
   currentMana: 100
-  baseAttack: 10
+  baseAttack: 5
   baseDefense: 5
 --- !u!212 &1776762377
 SpriteRenderer:
