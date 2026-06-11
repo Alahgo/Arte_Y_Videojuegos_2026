@@ -146,6 +146,7 @@ public class BattleManager : MonoBehaviour
             playerUnit.UseMana(5);
             _playerAnimator.SetTrigger("Atack2");
             playerUnit.UseSkill(enemyUnit);
+            yield return new WaitForSeconds(1.05f);
             _enemyAnimator.SetTrigger("getDamage");
             manaActualPlayer.text = playerUnit.currentMana.ToString();
         }
@@ -155,7 +156,7 @@ public class BattleManager : MonoBehaviour
             yield break; 
         }
 
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
         CheckBattleStatus();
     }
 
@@ -164,7 +165,7 @@ public class BattleManager : MonoBehaviour
         ventanaAcciones.SetActive(false);
         flechaSelecEnemy.SetActive(false);
         Debug.Log("Turno del enemigo");
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
        
 
         int currentLife = playerUnit.currentHp;
@@ -175,6 +176,7 @@ public class BattleManager : MonoBehaviour
 
         if (currentLife != playerUnit.currentHp)
         {
+            yield return new WaitForSeconds(1.10f);
             _playerAnimator.SetTrigger("getDamage");
             vidaActualPlayer.text = playerUnit.currentHp.ToString();
         }
